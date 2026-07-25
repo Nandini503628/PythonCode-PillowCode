@@ -1,0 +1,51 @@
+import tkinter as tk
+from tkinter import messagebox
+import requests
+API_KEY="81986ee77ee1487279a15d9e67c6e53b"
+def get_weather():
+    city=city_entry.get()
+    if city == "":
+        messagebox.showerror("Error","Please enter a city name")
+        return
+    url=f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+    try:
+        response=requests.get(url)
+        data=response.json()
+        if data["cod"]!=200:
+            messagebox.showerror("Error","City not found")
+            return
+        city_name=data["name"]
+        country=data["sys"]["country"]
+        temp=data["main"]["temp"]
+        feels=data["main"]["feels_like"]
+        humidity=data["main"]["humidity"]
+        pressure=data["main"]["pressure"]
+        weather=data["weather"][0]["description"]
+        wind=data["wind"]["speed"]
+        result=f"""City:{city_name},{country}
+Temperature:{temp}°C Feels Like:{feels}°C
+Weather:{weather.title()}
+Humidity:{humidity}%
+Pressure:{pressure} hPa
+Wind Speed:{wind}m/s
+"""
+        result_label.config(text=result)
+    except Exception as e:
+        messagebox.showerror("Error",str(e))
+
+root=tk.Tk()
+root.title("Weather App")
+root.geometry("450x400")
+root.config(bg="lightblue")
+title=tk.Label(root,text="OpenWeatherMapApp",font=("Arial",18,"bold"),bg="lightblue")
+title.pack(pady=10)
+frame=tk.Frame(root,bg="lightblue")
+frame.pack(pady=10)
+tk.Label(frame,text="Enter City:",font=("Arial",12),bg="lightblue").pack(side=tk.LEFT,padx=5)
+city_entry = tk.Entry(frame, font=("Arial", 12), width=20)
+city_entry.pack(side=tk.LEFT, padx=5)
+btn=tk.Button(root,text="Get Weather",font=("Arial",12,"bold"),bg="green",fg="white",command=get_weather)
+btn.pack(pady=10)
+result_label=tk.Label(root,text="",font=("Arial",12),bg="White",justify="left",anchor="nw",width=40,height=12,relief="solid")
+result_label.pack(padx=20,pady=10,fill="both",expand=True)
+root.mainloop()
