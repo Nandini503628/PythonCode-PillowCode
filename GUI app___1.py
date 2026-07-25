@@ -5,7 +5,7 @@ from PIL import Image,ImageTk
 from datetime import datetime
 def get_weather():
     city=city_entry.get()
-    api_key="81986ee77ee1487279a15d9e67c6e53b"
+    api_key=""
     base_url="https://api.openweathermap.org/data/2.5/weather?"
     url=base_url+"appid="+api_key+"&q="+city+"&units=imperial"
     weather_label.config(text="Loading...")
